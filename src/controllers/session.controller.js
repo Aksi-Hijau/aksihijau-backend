@@ -2,6 +2,7 @@ const UserService = require("../services/user.service");
 const SessionService = require("../services/session.service");
 const createApiResponse = require("../utils/createApiResponse");
 const { signJwt } = require("../utils/jwt.utils");
+const { accessTokenTtl, refreshTokenTtl } = require("../config/auth");
 
 const createSessionHandler = async (req, res) => {
     // validate email
@@ -18,17 +19,26 @@ const createSessionHandler = async (req, res) => {
     const session = await SessionService.createSession(user.id, req.get('user-agent') || "")
     
     // create access token
-    const accessToken = signJwt({ ...user, session: session.id }, { expiresIn: '15m' })
+    const accessToken = signJwt({ ...user, session: session.id }, { expiresIn: accessTokenTtl })
 
     // create refresh token
-    const refreshToken = signJwt({ ...user, session: session.id }, { expiresIn: '1y' })
+    const refreshToken = signJwt({ ...user, session: session.id }, { expiresIn: refreshTokenTtl })
 
     // return access token and refresh token
     return res.status(201).send(createApiResponse(true, { accessToken, refreshToken }, null))
 }
 
+const deleteSessionHandler = async (req, res) => {
+  const sessionId = res.locals.user.session
+
+  await SessionService.updateSession({ id: sessionId }, { valid: false })
+  
+  return res.sendStatus(204)
+}
+
 const SessionController = {
-  createSessionHandler
+  createSessionHandler,
+  deleteSessionHandler
 }
 
 module.exports = SessionController;
