@@ -25,7 +25,7 @@ const createSessionHandler = async (req, res) => {
     const refreshToken = signJwt({ ...user, session: session.id }, { expiresIn: refreshTokenTtl })
 
     // return access token and refresh token
-    return res.status(201).send(createApiResponse(true, { accessToken, refreshToken }, null))
+    return res.status(201).send(createApiResponse(true, { accessToken, refreshToken, role: user.role }, null))
 }
 
 const deleteSessionHandler = async (req, res) => {
