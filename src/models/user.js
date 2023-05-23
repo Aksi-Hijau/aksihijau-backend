@@ -15,7 +15,6 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
-
     async comparePassword(candidatePassword) {
       return bcrypt.compare(candidatePassword, this.password)
     }
@@ -65,7 +64,7 @@ module.exports = (sequelize, DataTypes) => {
     delete values.password;
     return values;
   };
-
+  
   User.associate = (models) => {
     User.hasMany(models.Session, { foreignKey: 'userId' });
   };

@@ -2,7 +2,6 @@ const express =  require('express')
 const routes = require('./routes')
 const db = require('./models')
 const deserializeUser = require('./middleware/deserializeUser')
-
 const PORT = 9000
 const HOST = 'localhost'
 
