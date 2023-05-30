@@ -48,10 +48,6 @@ module.exports = {
       description: {
         type: Sequelize.TEXT
       },
-      active: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-      },
       deadline: {
         type: Sequelize.DATE,
         allowNull: false,
