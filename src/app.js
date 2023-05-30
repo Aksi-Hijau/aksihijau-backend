@@ -2,7 +2,7 @@ const express =  require('express')
 const routes = require('./routes')
 const db = require('./models')
 const deserializeUser = require('./middleware/deserializeUser')
-const PORT = 9000
+const PORT = process.env.PORT || 8080
 const HOST = 'localhost'
 
 const app = express()
@@ -13,7 +13,7 @@ app.use(deserializeUser)
 
 db.sequelize.sync().then(() => {
   console.log('Database connected')
-  app.listen(PORT, HOST, () => {
+  app.listen(PORT, () => {
     console.log(`Server running at http://${HOST}:${PORT}`)
     routes(app)
   })

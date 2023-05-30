@@ -1,3 +1,4 @@
+const CampaignController = require('./controllers/campaign.controller.js');
 const SessionController = require('./controllers/session.controller.js');
 const UserController = require('./controllers/user.controller.js');
 const requireUser = require('./middleware/requireUser.js');
@@ -16,4 +17,6 @@ module.exports = function(app) {
   app.post('/api/sessions', validateRequest(SessionSchema.createSessionSchema), SessionController.createSessionHandler)
 
   app.delete('/api/sessions', requireUser, SessionController.deleteSessionHandler)
+
+  app.get('/api/campaigns', CampaignController.getCampaignsHandler);
 }
