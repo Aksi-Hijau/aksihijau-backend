@@ -1,5 +1,6 @@
 const getTimeAgo = require("../utils/getTimeAgo");
-const { Report, Campaign, Donation, User, Soil } = require("../models");
+const { Report, Campaign, Donation, User, Soil, Sequelize } = require("../models");
+const { set } = require('lodash')
 
 const getCampaigns = async (query) => {
   return Campaign.findAll({
@@ -41,6 +42,10 @@ const getCampaignBySlug = async (slug) => {
         "description",
         "updatedAt",
         "createdAt",
+        [
+          Sequelize.fn('COUNT', Sequelize.col('reports.id')),
+          'reportsCount'
+        ],
       ],
       include: [
         {
@@ -59,11 +64,23 @@ const getCampaignBySlug = async (slug) => {
           model: Soil,
           attributes: ["id", "type", "image"],
           as: "soil"
-        }
+        },
+        {
+          model: Report,
+          attributes: [],
+          as: "reports"
+        },
       ],
+      group: ['Campaign.id', 'donations.id', 'fundraiser.id', 'soil.id']
     });
+    
+    const reportsCount = campaign.dataValues.reportsCount;
+    const donationsCount = campaign.dataValues.donations.length;
 
-    return campaign
+    set(campaign, 'dataValues.reportsCount', reportsCount)
+    set(campaign, 'dataValues.donationsCount', donationsCount)
+
+    return campaign;
   } catch (error) {
     throw error;
   }

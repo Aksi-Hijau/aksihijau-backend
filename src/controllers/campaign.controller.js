@@ -77,7 +77,6 @@ const getCampaignBySlugHandler = async (req, res) => {
     const active = plainCampaign.deadline ? (remainingDays > 0 ? true : false) : true
 
     // TODO: Bikin count of reports
-    const countOfReports = 10
 
     const latestDonations = await CampaignService.getLatestDonations(plainCampaign.id, 3)
 
@@ -100,7 +99,7 @@ const getCampaignBySlugHandler = async (req, res) => {
     }
 
     const removeDonationsList = omit(plainCampaign, ['donations'])
-    const responseData = { ...removeDonationsList, remainingDays, collected, active, latestDonations, countOfReports, _links: hateOas }
+    const responseData = { ...removeDonationsList, remainingDays, collected, active, latestDonations, _links: hateOas }
 
     return res.send(createApiResponse(true, responseData, null));
   } catch (error) {
