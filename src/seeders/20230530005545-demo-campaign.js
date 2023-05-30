@@ -17,7 +17,7 @@ module.exports = {
     await queryInterface.bulkInsert('Campaigns', [
       {
         userId: 1,
-        soilId: 13,
+        soilId: 1,
         title: 'Kampanye 1',
         slug: 'kampanye-1',
         image: 'https://via.placeholder.com/640x480.png/00ff00?text=Kampanye+1',

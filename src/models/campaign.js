@@ -54,6 +54,7 @@ module.exports = (sequelize, DataTypes) => {
   Campaign.associate = (models) => {
     Campaign.belongsTo(models.User, { foreignKey: 'id' });
     Campaign.belongsTo(models.Soil, { foreignKey: 'id' });
+    Campaign.hasMany(models.Donation, { foreignKey: 'campaignId' });
   }
   return Campaign;
 };
