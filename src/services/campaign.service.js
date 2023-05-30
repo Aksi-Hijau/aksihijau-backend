@@ -77,7 +77,7 @@ const getLatestDonations = async (campaignId, limit) => {
   const donations =  await Donation.findAll({
     where: { campaignId, status: "paid" },
     limit: limit ? parseInt(limit) : null,
-    order: [["createdAt", "DESC"]],
+    order: [["paidAt", "DESC"]],
     attributes: ["id", "amount", "paidAt"],
     include: [
       {

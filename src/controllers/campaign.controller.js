@@ -1,7 +1,7 @@
 const { pick, omit } = require("lodash");
 const CampaignService = require("../services/campaign.service");
 const createApiResponse = require("../utils/createApiResponse");
-const SoilService = require("../services/soil.service");
+const Campaign = require("../models").Campaign;
 
 const campaignHateOasGenerator = (campaign) => {
   const hateoas = {
@@ -109,9 +109,26 @@ const getCampaignBySlugHandler = async (req, res) => {
   }
 }
 
+const getDonationsHandler = async (req, res) => {
+  try {
+    const campaign = await Campaign.findOne({ where: { slug: req.params.slug } })
+
+    if (!campaign) {
+      return res.status(404).send(createApiResponse(false, null, { slug: 'Campaign not found' }))
+    }
+
+    const donations = await CampaignService.getLatestDonations(campaign.id)
+
+    return res.send(createApiResponse(true, donations, null));
+  } catch (error) {
+    return res.status(500).send(createApiResponse(false, null, error.message));
+  }
+}
+
 const CampaignController = {
   getCampaignsHandler,
-  getCampaignBySlugHandler
+  getCampaignBySlugHandler,
+  getDonationsHandler
 }
 
 module.exports = CampaignController;
