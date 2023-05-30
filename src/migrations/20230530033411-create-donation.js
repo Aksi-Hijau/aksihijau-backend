@@ -2,12 +2,16 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Campaigns', {
+    await queryInterface.createTable('Donations', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
+      },
+      invoice: {
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       userId: {
         type: Sequelize.INTEGER,
@@ -19,38 +23,34 @@ module.exports = {
         onDelete : 'CASCADE',
         onUpdate : 'CASCADE',
       },
-      soilId: {
+      campaignId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Soil',
+          model: 'Campaigns',
           key: 'id',
         },
         onDelete : 'CASCADE',
         onUpdate : 'CASCADE',
       },
-      title: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      slug: {
-        type: Sequelize.STRING,
-        unique: true,
-        allowNull: false,
-      },
-      image: {
-        type: Sequelize.STRING
-      },
-      target: {
+      amount: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        min: 100,
       },
-      description: {
-        type: Sequelize.TEXT
+      status: {
+        type: Sequelize.ENUM("pending", "paid", "failed"),
+        allowNull: false,
       },
       deadline: {
-        type: Sequelize.DATE,
+        type: 'TIMESTAMP',
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
         allowNull: false,
+      },
+      paidAt: {
+        allowNull: true,
+        type: 'TIMESTAMP',
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
       createdAt: {
         allowNull: false,
@@ -65,6 +65,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Campaigns');
+    await queryInterface.dropTable('Donations');
   }
 };

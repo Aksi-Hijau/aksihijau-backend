@@ -19,4 +19,5 @@ module.exports = function(app) {
   app.delete('/api/sessions', requireUser, SessionController.deleteSessionHandler)
 
   app.get('/api/campaigns', CampaignController.getCampaignsHandler);
+  app.get('/api/campaigns/:slug', CampaignController.getCampaignBySlugHandler);
 }

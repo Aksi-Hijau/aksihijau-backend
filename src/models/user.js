@@ -42,6 +42,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    photo: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    birthDate: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
     role: {
       type: DataTypes.ENUM('user', 'admin'),
       defaultValue: 'user',
@@ -68,6 +76,7 @@ module.exports = (sequelize, DataTypes) => {
   User.associate = (models) => {
     User.hasMany(models.Session, { foreignKey: 'userId' });
     User.hasMany(models.Campaign, { foreignKey: 'userId' });
+    User.hasMany(models.Donation, { foreignKey: 'userId' });
   };
   
   return User;

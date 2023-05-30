@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const { Sequelize } = require('.');
 module.exports = (sequelize, DataTypes) => {
   class Campaign extends Model {
     /**
@@ -40,11 +41,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     }, createdAt: {
       allowNull: false,
-      type: DataTypes.DATE
+      type: 'TIMESTAMP',
     },
     updatedAt: {
       allowNull: false,
-      type: DataTypes.DATE
+      type: 'TIMESTAMP',
     }
   }, {
     sequelize,
@@ -52,9 +53,9 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   Campaign.associate = (models) => {
-    Campaign.belongsTo(models.User, { foreignKey: 'id' });
-    Campaign.belongsTo(models.Soil, { foreignKey: 'id' });
-    Campaign.hasMany(models.Donation, { foreignKey: 'campaignId' });
+    Campaign.belongsTo(models.User, { as: 'fundraiser', foreignKey: 'id' });
+    Campaign.belongsTo(models.Soil, { as: 'soil', foreignKey: 'id' });
+    Campaign.hasMany(models.Donation, { as: 'donations', foreignKey: 'campaignId' });
   }
   return Campaign;
 };

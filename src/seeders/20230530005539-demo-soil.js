@@ -13,7 +13,7 @@ module.exports = {
      * }], {});
     */
 
-    await queryInterface.bulkInsert('Soils', [
+    await queryInterface.bulkInsert('Soil', [
       {
         type: 'Sandy',
         image: 'https://images.unsplash.com/photo-1581093455538-4a5b8fdd3c5d?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2FuZHklMjBzb2lsfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80',

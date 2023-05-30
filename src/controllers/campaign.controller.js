@@ -1,6 +1,7 @@
-const { pick } = require("lodash");
+const { pick, omit } = require("lodash");
 const CampaignService = require("../services/campaign.service");
 const createApiResponse = require("../utils/createApiResponse");
+const SoilService = require("../services/soil.service");
 
 const campaignHateOasGenerator = (campaign) => {
   const hateoas = {
@@ -16,34 +17,38 @@ const campaignHateOasGenerator = (campaign) => {
   return hateoas
 }
 
+const calculateRemainingDays = (deadline) => {
+  const currentDate = new Date();
+  const dateDeadline = new Date(deadline);
+  const differenceInDays = Math.floor((new Date(dateDeadline) - currentDate) / (1000 * 60 * 60 * 24))
+  return differenceInDays
+}
+
 const getCampaignsHandler = async (req, res) => {
   try {
     const campaigns = await CampaignService.getCampaigns(req.query);
-
-    const currentDate = new Date();
     
     const updatedCampaigns = campaigns.map(campaign => {
       // Mengubah hasil query menjadi plain object
       const plainCampaign = campaign.get({ plain: true })
 
       // Menghitung sisa hari
-      const deadline = new Date(plainCampaign.deadline)
-      const differenceInDays = Math.floor((deadline - currentDate) / (1000 * 60 * 60 * 24))
+      const remainingDays = calculateRemainingDays(plainCampaign.deadline)
       
       // Menghitung total donasi
-      const collected = plainCampaign.Donations.reduce((total, donation) => total + donation.amount, 0)
+      const collected = plainCampaign.donations.reduce((total, donation) => total + donation.amount, 0)
 
       // Menghitung apakah campaign masih aktif
-      const active = deadline ? (differenceInDays > 0 ? true : false) : true
+      const active = plainCampaign.deadline ? (remainingDays > 0 ? true : false) : true
 
       // Generate hateoas
       const hateOas = campaignHateOasGenerator(plainCampaign)
 
-      // delete Donations
-      delete plainCampaign.Donations
+      // delete donations
+      delete plainCampaign.donations
 
       // Update campaign
-      const updatedCampaign = { ...plainCampaign, collected, remainingDays: differenceInDays, active, _links: hateOas }
+      const updatedCampaign = { ...plainCampaign, collected, remainingDays, active, _links: hateOas }
 
       return updatedCampaign
     })
@@ -53,10 +58,60 @@ const getCampaignsHandler = async (req, res) => {
     console.log(error)
     return res.send(createApiResponse(false, null, error.message))
   }
-} 
+}
+
+const getCampaignBySlugHandler = async (req, res) => {
+  const { slug } = req.params
+  try {
+    const campaign = await CampaignService.getCampaignBySlug(slug);
+
+    if (!campaign) {
+      return res.status(404).send(createApiResponse(false, null, { slug: 'Campaign not found' }))
+    }
+
+    const plainCampaign = campaign.get({ plain: true })
+
+    const remainingDays = calculateRemainingDays(plainCampaign.deadline)
+
+    const collected = plainCampaign.donations.reduce((total, donation) => total + donation.amount, 0)
+    
+    const active = plainCampaign.deadline ? (remainingDays > 0 ? true : false) : true
+
+    // TODO: Bikin count of reports
+    const countOfReports = 10
+
+    const latestDonations = await CampaignService.getLatestDonations(plainCampaign.id, 3)
+
+    const hateOas = {
+      donate: {
+        href: `/api/campaigns/${plainCampaign.slug}/donations`,
+        method: "POST"
+      },
+      donations: {
+        href: `/api/campaigns/${plainCampaign.slug}/donations`,
+        method: "GET"
+      },
+      reports: {
+        href: `/api/campaigns/${plainCampaign.slug}/reports`,
+        method: "GET"
+      },
+      soilDetails: {
+        href: `/api/soils/${plainCampaign.soilId}`
+      }
+    }
+
+    const removeDonationsList = omit(plainCampaign, ['donations'])
+    const responseData = { ...removeDonationsList, remainingDays, collected, active, latestDonations, countOfReports, _links: hateOas }
+
+    return res.send(createApiResponse(true, responseData, null));
+  } catch (error) {
+    return res.status(500).send(createApiResponse(false, null, error.message));
+  }
+}
 
 const CampaignController = {
-  getCampaignsHandler
+  getCampaignsHandler,
+  getCampaignBySlugHandler
 }
 
 module.exports = CampaignController;
