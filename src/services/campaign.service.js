@@ -1,9 +1,5 @@
 const getTimeAgo = require("../utils/getTimeAgo");
-
-const Campaign = require("../models").Campaign;
-const Donation = require("../models").Donation;
-const User = require("../models").User;
-const Soil = require("../models").Soil;
+const { Report, Campaign, Donation, User, Soil } = require("../models");
 
 const getCampaigns = async (query) => {
   return Campaign.findAll({
@@ -101,10 +97,25 @@ const getLatestDonations = async (campaignId, limit) => {
   return formattedDonations
 }
 
+const getReports = async (campaignId) => {
+  return Report.findAll({
+    where: { campaignId },
+    attributes: ["id", "title", "body", "createdAt"],
+    include: [
+      {
+        model: User,
+        attributes: ["id", "name", "photo"],
+        as: "user",
+      },
+    ],
+  })
+}
+
 const CampaignService = {
   getCampaigns,
   getCampaignBySlug,
-  getLatestDonations
+  getLatestDonations,
+  getReports
 };
 
 module.exports = CampaignService;
