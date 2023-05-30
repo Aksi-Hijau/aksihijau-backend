@@ -55,8 +55,7 @@ const getCampaignsHandler = async (req, res) => {
 
     return res.send(createApiResponse(true, updatedCampaigns, null));
   } catch (error) {
-    console.log(error)
-    return res.send(createApiResponse(false, null, error.message))
+    return res.status(500).send(createApiResponse(false, null, error.message))
   }
 }
 
@@ -125,10 +124,38 @@ const getDonationsHandler = async (req, res) => {
   }
 }
 
+const getReportsHandler = async (req, res) => {
+  try {
+    const campaign = await Campaign.findOne({ where: { slug: req.params.slug } })
+
+    if (!campaign) {
+      return res.status(404).send(createApiResponse(false, null, { slug: 'Campaign not found' }))
+    }
+
+    const reports = await CampaignService.getReports(campaign.id)
+
+    const updatedReports = reports.map(report => {
+      return {
+        id: report.id,
+        creatorName: report.user.name,
+        creatorImage: report.user.photo,
+        title: report.title,
+        body: report.body,
+        createdAt: report.createdAt,
+      }
+    })
+
+    return res.send(createApiResponse(true, updatedReports, null));
+  } catch (error) {
+    return res.status(500).send(createApiResponse(false, null, error.message))
+  }
+}
+
 const CampaignController = {
   getCampaignsHandler,
   getCampaignBySlugHandler,
-  getDonationsHandler
+  getDonationsHandler,
+  getReportsHandler
 }
 
 module.exports = CampaignController;

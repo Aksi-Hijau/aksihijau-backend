@@ -21,4 +21,5 @@ module.exports = function(app) {
   app.get('/api/campaigns', CampaignController.getCampaignsHandler);
   app.get('/api/campaigns/:slug', CampaignController.getCampaignBySlugHandler);
   app.get('/api/campaigns/:slug/donations', CampaignController.getDonationsHandler);
+  app.get('/api/campaigns/:slug/reports', CampaignController.getReportsHandler);
 }
