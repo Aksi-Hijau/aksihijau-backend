@@ -1,5 +1,6 @@
 const CampaignController = require('./controllers/campaign.controller.js');
 const SessionController = require('./controllers/session.controller.js');
+const SoilController = require('./controllers/soil.controller.js');
 const UserController = require('./controllers/user.controller.js');
 const requireUser = require('./middleware/requireUser.js');
 const validateRequest = require('./middleware/validateRequest.js');
@@ -22,4 +23,6 @@ module.exports = function(app) {
   app.get('/api/campaigns/:slug', CampaignController.getCampaignBySlugHandler);
   app.get('/api/campaigns/:slug/donations', CampaignController.getDonationsHandler);
   app.get('/api/campaigns/:slug/reports', CampaignController.getReportsHandler);
+
+  app.get('/api/soils/:id', SoilController.getSoilByIdHandler);
 }
