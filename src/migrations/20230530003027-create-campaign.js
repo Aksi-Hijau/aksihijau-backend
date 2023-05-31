@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Sessions', {
+    await queryInterface.createTable('Campaigns', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -19,11 +19,38 @@ module.exports = {
         onDelete : 'CASCADE',
         onUpdate : 'CASCADE',
       },
-      valid: {
-        type: Sequelize.BOOLEAN
+      soilId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Soil',
+          key: 'id',
+        },
+        onDelete : 'CASCADE',
+        onUpdate : 'CASCADE',
       },
-      userAgent: {
+      title: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      slug: {
+        type: Sequelize.STRING,
+        unique: true,
+        allowNull: false,
+      },
+      image: {
         type: Sequelize.STRING
+      },
+      target: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      description: {
+        type: Sequelize.TEXT
+      },
+      deadline: {
+        type: Sequelize.DATE,
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,
@@ -38,6 +65,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Sessions');
+    await queryInterface.dropTable('Campaigns');
   }
 };

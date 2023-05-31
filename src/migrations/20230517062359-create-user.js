@@ -28,6 +28,14 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      photo: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      birthDate: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
       role: {
         type: Sequelize.ENUM('user', 'admin'),
         defaultValue: 'user',
@@ -35,11 +43,13 @@ module.exports = {
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: 'TIMESTAMP',
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: 'TIMESTAMP',
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       }
     });
   },
