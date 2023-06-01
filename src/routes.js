@@ -1,4 +1,5 @@
 const CampaignController = require('./controllers/campaign.controller.js');
+const DonationController = require('./controllers/donation.controller.js');
 const SessionController = require('./controllers/session.controller.js');
 const SoilController = require('./controllers/soil.controller.js');
 const UserController = require('./controllers/user.controller.js');
@@ -28,4 +29,6 @@ module.exports = function(app) {
   app.get('/api/soils/:id', SoilController.getSoilByIdHandler);
 
   app.post('/api/campaigns/:slug/donations', validateRequest(DonationSchema.createDonationSchema), requireUser, CampaignController.createDonationHandler);
+
+  app.get('/api/donations', requireUser, DonationController.getDonationsHandler)
 }
