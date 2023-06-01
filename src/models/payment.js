@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Payment.init({
     type: DataTypes.STRING,
+    method: DataTypes.STRING,
     name: DataTypes.STRING,
     logo: DataTypes.STRING
   }, {

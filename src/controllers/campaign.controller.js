@@ -162,7 +162,7 @@ const createDonationHandler = async (req, res) => {
     }
 
     // check payments opstion
-    const paymentOption = await PaymentService.getPaymentOptions({ type: req.body.paymentMethod })
+    const paymentOption = await PaymentService.getPaymentOptions({ method: req.body.paymentMethod })
 
     if (!paymentOption) {
       return res.status(404).send(createApiResponse(false, null, { paymentMethod: 'Payment method not found' }))
@@ -200,7 +200,7 @@ const createDonationHandler = async (req, res) => {
 
     if (donation.paymentType === "bank") {
       responseDonation.payment.bank = {
-        type: paymentOption.type,
+        type: paymentOption.method,
         vaNumber: donation.vaNumber,
       }
       responseDonation._links = {
@@ -210,7 +210,7 @@ const createDonationHandler = async (req, res) => {
 
     if (donation.paymentType === "ewallet") {
       responseDonation.payment.ewallet = {
-        type: paymentOption.type,
+        type: paymentOption.method,
         instructions: "incstruction",
         actions: midtransPayment.actions
       }
