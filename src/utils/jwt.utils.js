@@ -2,7 +2,8 @@ const jwt = require('jsonwebtoken');
 const { publicKey, privateKey } = require('../config/auth');
 
 const signJwt = (object, options) => {
-  return jwt.sign(object, privateKey, {
+  const removeSensitiveInfo = ({ password, ...rest }) => rest
+  return jwt.sign(removeSensitiveInfo(object), privateKey, {
       algorithm: 'RS256',
       ...options,
   })

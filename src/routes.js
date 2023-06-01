@@ -4,6 +4,7 @@ const SoilController = require('./controllers/soil.controller.js');
 const UserController = require('./controllers/user.controller.js');
 const requireUser = require('./middleware/requireUser.js');
 const validateRequest = require('./middleware/validateRequest.js');
+const DonationSchema = require('./schemas/donation.schema.js');
 const User = require('./models').User;
 const SessionSchema = require('./schemas/session.schema.js');
 const UserSchema = require('./schemas/user.schema.js');
@@ -25,4 +26,6 @@ module.exports = function(app) {
   app.get('/api/campaigns/:slug/reports', CampaignController.getReportsHandler);
 
   app.get('/api/soils/:id', SoilController.getSoilByIdHandler);
+
+  app.post('/api/campaigns/:slug/donations', validateRequest(DonationSchema.createDonationSchema), requireUser, CampaignController.createDonationHandler);
 }

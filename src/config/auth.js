@@ -38,7 +38,7 @@ rYgJYsO1RxZ9ZHeiLPGLhhuaL7DzfAhczjO7HHFyH+pSzmt1LVmSDKQj++dV43Lp
 CwIDAQAB
 -----END PUBLIC KEY-----`
 
-const accessTokenTtl = '15m'
+const accessTokenTtl = '1m'
 
 const refreshTokenTtl = '1y'
 

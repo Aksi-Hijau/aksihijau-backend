@@ -24,8 +24,10 @@ const reIssueAccessToken = async ({ refreshToken }) => {
 
   if (!user) return false
 
+  const { dataValues: dataValuesUser } = user
+
   const accessToken = signJwt(
-    { ...user, session: session.id },
+    { ...dataValuesUser, session: session.id },
     { expiresIn: accessTokenTtl }
   )
 

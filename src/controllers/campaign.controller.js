@@ -1,6 +1,9 @@
 const { pick, omit } = require("lodash");
 const CampaignService = require("../services/campaign.service");
 const createApiResponse = require("../utils/createApiResponse");
+const DonationService = require("../services/donation.service");
+const PaymentService = require("../services/payment.service");
+const formattedDate = require("../utils/formattedDate");
 const Campaign = require("../models").Campaign;
 
 const campaignHateOasGenerator = (campaign) => {
@@ -150,11 +153,81 @@ const getReportsHandler = async (req, res) => {
   }
 }
 
+const createDonationHandler = async (req, res) => {
+  try {
+    const campaign = await Campaign.findOne({ where: { slug: req.params.slug } })
+    
+    if (!campaign) {
+      return res.status(404).send(createApiResponse(false, null, { slug: 'Campaign not found' }))
+    }
+
+    // check payments opstion
+    const paymentOption = await PaymentService.getPaymentOptions({ type: req.body.paymentMethod })
+
+    if (!paymentOption) {
+      return res.status(404).send(createApiResponse(false, null, { paymentMethod: 'Payment method not found' }))
+    }
+
+    const user = res.locals.user
+    const { id: userId } = user
+    
+    const invoice = DonationService.generateInvoiceId("INV")
+
+    const newDonation = { ...req.body, invoice, userId, campaignId: campaign.id, paymentId: paymentOption.id }
+
+    // create payment
+    const midtransPayment = await PaymentService.createPaymentMidtrans(newDonation, user)
+    
+    // create donation
+    const donation = await DonationService.createDonation({ ...newDonation, ...midtransPayment })
+
+    // if emoney, then save to paymentActions
+    if (newDonation.paymentType === "ewallet") {
+      await PaymentService.createPaymentAction({ donationId: donation.id, actions: midtransPayment.actions })
+    }
+
+    const responseDonation = {
+        invoice: invoice,
+        amount: donation.amount,
+        donorName: user.name,
+        deadline: formattedDate(donation.deadline),
+        payment: {
+          type: donation.paymentType,
+          name: paymentOption.name,
+          logo: paymentOption.logo,
+        },
+    }
+
+    if (donation.paymentType === "bank") {
+      responseDonation.payment.bank = {
+        type: paymentOption.type,
+        vaNumber: donation.vaNumber,
+      }
+      responseDonation._links = {
+        instructions: `/api/donations/${invoice}/instructions`,
+      }
+    }
+
+    if (donation.paymentType === "ewallet") {
+      responseDonation.payment.ewallet = {
+        type: paymentOption.type,
+        instructions: "incstruction",
+        actions: midtransPayment.actions
+      }
+    }
+
+    return res.status(201).send(createApiResponse(true, responseDonation, null))
+  } catch (err) {
+    return res.status(500).send(createApiResponse(false, null, err.message))
+  }
+}
+
 const CampaignController = {
   getCampaignsHandler,
   getCampaignBySlugHandler,
   getDonationsHandler,
-  getReportsHandler
+  getReportsHandler,
+  createDonationHandler
 }
 
 module.exports = CampaignController;
