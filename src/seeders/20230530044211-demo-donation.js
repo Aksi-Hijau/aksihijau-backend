@@ -15,9 +15,13 @@ module.exports = {
     
     await queryInterface.bulkInsert('Donations', [
       {
+        invoice: 'INV/20210530/1',
         campaignId: 1,
         userId: 1,
+        paymentId: 1,
         amount: 100000,
+        paymentType: 'bank',
+        paymentMethod: 'bri',
         status: 'paid',
         deadline: new Date(),
         paidAt: new Date(),
@@ -25,25 +29,19 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
+        invoice: 'INV/20210130/1',
         campaignId: 1,
         userId: 1,
+        paymentId: 1,
         amount: 100000,
+        paymentType: 'bank',
+        paymentMethod: 'bri',
         status: 'paid',
         deadline: new Date(),
         paidAt: new Date(),
         createdAt: new Date(),
         updatedAt: new Date(),
       },
-      {
-        campaignId: 1,
-        userId: 1,
-        amount: 100000,
-        status: 'pending',
-        deadline: new Date(),
-        paidAt: null,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      }
     ], {});
   },
 

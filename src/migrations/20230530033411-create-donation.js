@@ -33,10 +33,32 @@ module.exports = {
         onDelete : 'CASCADE',
         onUpdate : 'CASCADE',
       },
+      paymentId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        references: {
+          model: 'Payments',
+          key: 'id',
+        },
+        onDelete : 'SET NULL',
+        onUpdate : 'CASCADE',
+      },
       amount: {
         type: Sequelize.INTEGER,
         allowNull: false,
         min: 100,
+      },
+      paymentType: {
+        type: Sequelize.ENUM("bank", "ewallet"),
+        allowNull: false,
+      },
+      paymentMethod: {
+        type: Sequelize.ENUM("gopay", "shopeepay", "bni", "bca", "bri"),
+        allowNull: true,
+      },
+      vaNumber: {
+        type: Sequelize.STRING,
+        allowNull: true,
       },
       status: {
         type: Sequelize.ENUM("pending", "paid", "failed"),

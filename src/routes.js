@@ -1,9 +1,12 @@
 const CampaignController = require('./controllers/campaign.controller.js');
+const DonationController = require('./controllers/donation.controller.js');
+const PaymentController = require('./controllers/payment.controller.js');
 const SessionController = require('./controllers/session.controller.js');
 const SoilController = require('./controllers/soil.controller.js');
 const UserController = require('./controllers/user.controller.js');
 const requireUser = require('./middleware/requireUser.js');
 const validateRequest = require('./middleware/validateRequest.js');
+const DonationSchema = require('./schemas/donation.schema.js');
 const User = require('./models').User;
 const SessionSchema = require('./schemas/session.schema.js');
 const UserSchema = require('./schemas/user.schema.js');
@@ -25,4 +28,12 @@ module.exports = function(app) {
   app.get('/api/campaigns/:slug/reports', CampaignController.getReportsHandler);
 
   app.get('/api/soils/:id', SoilController.getSoilByIdHandler);
+
+  app.post('/api/campaigns/:slug/donations', validateRequest(DonationSchema.createDonationSchema), requireUser, CampaignController.createDonationHandler);
+
+  app.get('/api/donations', requireUser, DonationController.getDonationsHandler)
+  app.get('/api/donations/:invoice', requireUser, DonationController.getDonationByInvoiceHandler)
+  app.get('/api/donations/:invoice/instructions', requireUser, DonationController.getDonationInstructionByInvoiceHandler)
+
+  app.get('/api/payments', PaymentController.getPaymentsHandler)
 }
