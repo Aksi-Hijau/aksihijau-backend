@@ -17,7 +17,7 @@ module.exports = {
       {
         type: "bank",
         method: 'bni',
-        name: 'Bank BNI',
+        name: 'BNI Virtual Account',
         logo: 'https://upload.wikimedia.org/wikipedia/commons/9/9e/BNI_logo.png',
         createdAt: new Date(),
         updatedAt: new Date()
@@ -25,7 +25,7 @@ module.exports = {
       {
         type: "bank",
         method: 'bca',
-        name: 'Bank BCA',
+        name: 'BCA Virtual Account',
         logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/BCA_logo.svg/1200px-BCA_logo.svg.png',
         createdAt: new Date(),
         updatedAt: new Date()
@@ -33,7 +33,7 @@ module.exports = {
       {
         type: "bank",
         method: 'bri',
-        name: 'Bank BRI',
+        name: 'BRI Virtual Account',
         logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/BRI_logo.svg/1200px-BRI_logo.svg.png',
         createdAt: new Date(),
         updatedAt: new Date()
