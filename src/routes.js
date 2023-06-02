@@ -1,5 +1,6 @@
 const CampaignController = require('./controllers/campaign.controller.js');
 const DonationController = require('./controllers/donation.controller.js');
+const PaymentController = require('./controllers/payment.controller.js');
 const SessionController = require('./controllers/session.controller.js');
 const SoilController = require('./controllers/soil.controller.js');
 const UserController = require('./controllers/user.controller.js');
@@ -33,4 +34,6 @@ module.exports = function(app) {
   app.get('/api/donations', requireUser, DonationController.getDonationsHandler)
   app.get('/api/donations/:invoice', requireUser, DonationController.getDonationByInvoiceHandler)
   app.get('/api/donations/:invoice/instructions', requireUser, DonationController.getDonationInstructionByInvoiceHandler)
+
+  app.get('/api/payments', PaymentController.getPaymentsHandler)
 }

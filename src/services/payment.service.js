@@ -1,5 +1,5 @@
 const BankTransfer = require("../payments/BankTransfer")
-const { BankPayment, Payment, PaymentAction } = require("../models")
+const { Payment, PaymentAction } = require("../models")
 const EWalletPayment = require("../payments/EWalletPayment")
 
 const createPaymentMidtrans = async (newDonation, user) => {
@@ -80,12 +80,19 @@ const createPaymentAction = ({ donationId, actions }) => {
   return PaymentAction.bulkCreate(actions.map(action => ({ ...action, donationId })))
 }
 
+const getPayments = async (query) => {
+  return Payment.findAll({
+    where: query
+  })
+}
+
 const PaymentService = {
   createPaymentMidtrans,
   createBankTransfer,
   getPaymentOptions,
   createEwalletPayment,
-  createPaymentAction
+  createPaymentAction,
+  getPayments
 }
 
 module.exports = PaymentService
