@@ -60,7 +60,7 @@ const getDonationsUserHistory = async(userId) => {
   return updatedDonations
 }
 
-const getDonationByInvoice = async(invoice, userId) => {
+const getDonationWithCampaignAndPaymentByInvoice = async(invoice, userId) => {
   const donation = await Donation.findOne({
     where: { invoice, userId },
     attributes: ['id', 'invoice', 'amount', 'status', 'paidAt', 'createdAt'],
@@ -81,10 +81,32 @@ const getDonationByInvoice = async(invoice, userId) => {
   return donation
 }
 
+const getDonationByInvoice = async (invoice, userId) => {
+  if (userId) {
+    return Donation.findOne({
+      where: { invoice, userId },
+      attributes: ['id', 'paymentId', 'invoice', 'amount', 'paymentType', 'paymentMethod', 'vaNumber', 'status', 'paidAt', 'createdAt'],
+      include: [
+        {
+          model: Payment,
+          as: 'payment',
+          attributes: ['id', 'type', 'logo', 'name'],
+        }
+      ]
+    })
+  }
+
+  return Donation.findOne({
+    where: { invoice },
+    attributes: ['id', 'invoice', 'amount', 'paymentType', 'paymentMethod', 'vaNumber', 'status', 'paidAt', 'createdAt'],
+  })
+}
+
 const DonationService = {
   generateInvoiceId,
   createDonation,
   getDonationsUserHistory,
+  getDonationWithCampaignAndPaymentByInvoice,
   getDonationByInvoice
 }
 

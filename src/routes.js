@@ -32,4 +32,5 @@ module.exports = function(app) {
 
   app.get('/api/donations', requireUser, DonationController.getDonationsHandler)
   app.get('/api/donations/:invoice', requireUser, DonationController.getDonationByInvoiceHandler)
+  app.get('/api/donations/:invoice/instructions', requireUser, DonationController.getDonationInstructionByInvoiceHandler)
 }
