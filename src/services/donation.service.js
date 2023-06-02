@@ -1,6 +1,5 @@
-const { includes, invoke } = require("lodash")
 const { donationDurationInHours } = require("../config/donation")
-const { Donation, Campaign } = require("../models")
+const { Donation, Campaign, Payment } = require("../models")
 const addHoursToCurrentTime = require("../utils/addHoursToCurrentTime")
 
 const generateInvoiceId = (prefix) => {
@@ -61,10 +60,32 @@ const getDonationsUserHistory = async(userId) => {
   return updatedDonations
 }
 
+const getDonationByInvoice = async(invoice, userId) => {
+  const donation = await Donation.findOne({
+    where: { invoice, userId },
+    attributes: ['id', 'invoice', 'amount', 'status', 'paidAt', 'createdAt'],
+    include: [
+      {
+        model: Campaign,
+        as: 'campaign',
+        attributes: ['id', 'image', 'title'],
+      },
+      {
+        model: Payment,
+        as: 'payment',
+        attributes: ['id', 'type', 'name'],
+      }
+    ]
+  })
+
+  return donation
+}
+
 const DonationService = {
   generateInvoiceId,
   createDonation,
-  getDonationsUserHistory
+  getDonationsUserHistory,
+  getDonationByInvoice
 }
 
 module.exports = DonationService

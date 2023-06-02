@@ -31,4 +31,5 @@ module.exports = function(app) {
   app.post('/api/campaigns/:slug/donations', validateRequest(DonationSchema.createDonationSchema), requireUser, CampaignController.createDonationHandler);
 
   app.get('/api/donations', requireUser, DonationController.getDonationsHandler)
+  app.get('/api/donations/:invoice', requireUser, DonationController.getDonationByInvoiceHandler)
 }
