@@ -35,6 +35,8 @@ module.exports = {
         method: 'bri',
         name: 'Bank BRI',
         logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/BRI_logo.svg/1200px-BRI_logo.svg.png',
+        createdAt: new Date(),
+        updatedAt: new Date()
       },
       {
         type: "ewallet",

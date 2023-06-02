@@ -73,6 +73,10 @@ const getCampaignBySlug = async (slug) => {
       ],
       group: ['Campaign.id', 'donations.id', 'fundraiser.id', 'soil.id']
     });
+
+    if (!campaign) {
+      return false
+    }
     
     const reportsCount = campaign.dataValues.reportsCount;
     const donationsCount = campaign.dataValues.donations.length;
