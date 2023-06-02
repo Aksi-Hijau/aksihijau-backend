@@ -15,7 +15,7 @@ module.exports = {
     
     await queryInterface.bulkInsert('Donations', [
       {
-        invoice: 'INV/20210530/1',
+        invoice: 'INV7584958494',
         campaignId: 1,
         userId: 1,
         paymentId: 1,
@@ -29,7 +29,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        invoice: 'INV/20210130/1',
+        invoice: 'INV7584958495',
         campaignId: 1,
         userId: 1,
         paymentId: 1,
