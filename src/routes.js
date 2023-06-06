@@ -6,10 +6,12 @@ const SoilController = require('./controllers/soil.controller.js');
 const UserController = require('./controllers/user.controller.js');
 const requireUser = require('./middleware/requireUser.js');
 const validateRequest = require('./middleware/validateRequest.js');
+const CampaignSchema = require('./schemas/campaign.schema.js');
 const DonationSchema = require('./schemas/donation.schema.js');
 const User = require('./models').User;
 const SessionSchema = require('./schemas/session.schema.js');
 const UserSchema = require('./schemas/user.schema.js');
+const multerConfig = require('./utils/multerConfig.js');
 
 module.exports = function(app) {
   app.get('/health-check', requireUser, async (req, res) => {
@@ -23,6 +25,7 @@ module.exports = function(app) {
   app.delete('/api/sessions', requireUser, SessionController.deleteSessionHandler)
 
   app.get('/api/campaigns', CampaignController.getCampaignsHandler);
+  app.post('/api/campaigns', multerConfig.single('image'), validateRequest(CampaignSchema.createCampaignSchema), requireUser, CampaignController.createCampaignHandler);
   app.get('/api/campaigns/:slug', CampaignController.getCampaignBySlugHandler);
   app.get('/api/campaigns/:slug/donations', CampaignController.getDonationsHandler);
   app.get('/api/campaigns/:slug/reports', CampaignController.getReportsHandler);

@@ -21,7 +21,7 @@ module.exports = {
       },
       soilId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: 'Soil',
           key: 'id',
