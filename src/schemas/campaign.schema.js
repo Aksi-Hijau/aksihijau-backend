@@ -12,10 +12,7 @@ const createCampaignSchema = object({
       return !isExist
     }),
     description: string().required('Description is required'),
-    soilId: number().test('is-valid-soilId', 'Invalid soilId', async function (value) {
-      if (value === undefined) {
-        return true
-      }
+    soilId: number().required('Soil id is required').test('is-valid-soilId', 'Invalid soilId', async function (value) {
       const isValidSoilId = await SoilService.checkSoilId(value)
       return isValidSoilId
     }),
