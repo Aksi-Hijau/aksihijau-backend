@@ -1,9 +1,11 @@
 const { pick, omit } = require("lodash");
 const CampaignService = require("../services/campaign.service");
+const StorageService = require("../services/storage.service");
 const createApiResponse = require("../utils/createApiResponse");
 const DonationService = require("../services/donation.service");
 const PaymentService = require("../services/payment.service");
 const formattedDate = require("../utils/formattedDate");
+const addDaysToCurrentDate = require("../utils/addDaysToCurrentDate");
 const Campaign = require("../models").Campaign;
 
 const campaignHateOasGenerator = (campaign) => {
@@ -222,12 +224,42 @@ const createDonationHandler = async (req, res) => {
   }
 }
 
+const createCampaignHandler = async (req, res) => {
+  try {
+    const user = res.locals.user
+    const { id: userId } = user
+
+    if (!req.file) {
+      return res.status(400).send(createApiResponse(false, null, { image: 'Image is required' }))
+    }
+
+    const validImageFormats = ['image/jpg', 'image/jpeg', 'image/png']
+    if(!validImageFormats.includes(req.file.mimetype)) {
+      return res.status(400).send(createApiResponse(false, null, { image: 'Image must be jpg, jpeg, or png' }))
+    }
+
+    // upload image
+    const imageUri = await StorageService.uploadImage(req.file, 'campaigns')
+
+    const deadline = addDaysToCurrentDate(req.body.duration)
+    
+    // create campaign
+    const campaign = await CampaignService.createCampaign({ ...req.body, deadline, image: imageUri, userId })
+
+    return res.status(201).send(createApiResponse(true, campaign, null))
+  } catch (error) {
+    console.log(error)
+    return res.status(500).send(createApiResponse(false, null, error.message))
+  }
+}
+
 const CampaignController = {
   getCampaignsHandler,
   getCampaignBySlugHandler,
   getDonationsHandler,
   getReportsHandler,
-  createDonationHandler
+  createDonationHandler,
+  createCampaignHandler
 }
 
 module.exports = CampaignController;

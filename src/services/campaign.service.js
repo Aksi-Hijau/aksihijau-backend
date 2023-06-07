@@ -132,11 +132,31 @@ const getReports = async (campaignId) => {
   })
 }
 
+const createCampaign = async (campaignData) => {
+  const campaign = await Campaign.create(campaignData);
+  return campaign;
+}
+
+const isExistCampaign = async (slug) => {
+  const campaign = await Campaign.findOne({
+    where: { slug },
+    attributes: ["id"],
+  });
+
+  if (!campaign) {
+    return false;
+  }
+
+  return true;
+}
+
 const CampaignService = {
   getCampaigns,
   getCampaignBySlug,
   getLatestDonations,
-  getReports
+  getReports,
+  createCampaign,
+  isExistCampaign
 };
 
 module.exports = CampaignService;
