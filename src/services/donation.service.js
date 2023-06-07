@@ -102,12 +102,22 @@ const getDonationByInvoice = async (invoice, userId) => {
   })
 }
 
+const updateDonationByInvoice = async (invoice, updatedData) => {
+  const donation = await Donation.findOne({ where: { invoice } })
+  if(!donation) {
+    return false
+  }
+  await donation.update(updatedData)
+  return true
+}
+
 const DonationService = {
   generateInvoiceId,
   createDonation,
   getDonationsUserHistory,
   getDonationWithCampaignAndPaymentByInvoice,
-  getDonationByInvoice
+  getDonationByInvoice,
+  updateDonationByInvoice
 }
 
 module.exports = DonationService
