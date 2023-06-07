@@ -1,11 +1,12 @@
 const midtransClient = require('midtrans-client');
+const { midtransServerKey, midtransClientKey } = require('../config/payments');
 
 class MidtransRequest {
     constructor({ payment_type, order_id, amount, item_details, customer_details }) {
         this.core = new midtransClient.CoreApi({
             isProduction: false,
-            serverKey: process.env.MIDTRANS_SERVER_KEY || 'SB-Mid-server-ODxJzxNjUPnr6SfhgCA2kn87',
-            clientKey: process.env.MIDTRANS_CLIENT_KEY || 'SB-Mid-client-yeCDbvEXnzjylyzD'
+            serverKey: midtransServerKey,
+            clientKey: midtransClientKey
         })
         this.payment_type = payment_type
         this.order_id = order_id

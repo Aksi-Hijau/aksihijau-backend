@@ -39,4 +39,6 @@ module.exports = function(app) {
   app.get('/api/donations/:invoice/instructions', requireUser, DonationController.getDonationInstructionByInvoiceHandler)
 
   app.get('/api/payments', PaymentController.getPaymentsHandler)
+
+  app.post('/api/midtrans/callback', PaymentController.midtransCallback)
 }
