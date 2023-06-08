@@ -26,7 +26,7 @@ module.exports = function(app) {
 
   app.get('/api/campaigns', CampaignController.getCampaignsHandler);
   app.get('/api/campaigns/search', CampaignController.getSearchCampaignsHandler)
-  app.post('/api/campaigns', multerConfig.single('image'), validateRequest(CampaignSchema.createCampaignSchema), requireUser, CampaignController.createCampaignHandler);
+  app.post('/api/campaigns', multerConfig.fields([{ name: 'image', maxCount: 1 }, { name: 'permitDocument', maxCount: 1 }]), validateRequest(CampaignSchema.createCampaignSchema), requireUser, CampaignController.createCampaignHandler);
   app.get('/api/campaigns/:slug', CampaignController.getCampaignBySlugHandler);
   app.get('/api/campaigns/:slug/donations', CampaignController.getDonationsHandler);
   app.get('/api/campaigns/:slug/reports', CampaignController.getReportsHandler);

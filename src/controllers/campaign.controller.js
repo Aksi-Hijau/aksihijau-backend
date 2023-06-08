@@ -221,13 +221,11 @@ const createDonationHandler = async (req, res) => {
     });
 
     if (!paymentOption) {
-      return res
-        .status(404)
-        .send(
-          createApiResponse(false, null, {
-            paymentMethod: "Payment method not found",
-          })
-        );
+      return res.status(404).send(
+        createApiResponse(false, null, {
+          paymentMethod: "Payment method not found",
+        })
+      );
     }
 
     const user = res.locals.user;
@@ -305,26 +303,39 @@ const createCampaignHandler = async (req, res) => {
   try {
     const user = res.locals.user;
     const { id: userId } = user;
+    
+    const image = req.files["image"][0];
+    const permitDocument = req.files["permitDocument"][0];
 
-    if (!req.file) {
+    if (!image) {
       return res
         .status(400)
         .send(createApiResponse(false, null, { image: "Image is required" }));
     }
 
+    const validDocumentFormats = ["application/pdf", "image/jpg", "image/jpeg", "image/png"];
+    if (!validDocumentFormats.includes(permitDocument.mimetype)) {
+      return res.status(400).send(
+        createApiResponse(false, null, {
+          permitDocument: "Permit document must be pdf, jpg, jpeg, or png",
+        })
+      );
+    }
+
     const validImageFormats = ["image/jpg", "image/jpeg", "image/png"];
-    if (!validImageFormats.includes(req.file.mimetype)) {
-      return res
-        .status(400)
-        .send(
-          createApiResponse(false, null, {
-            image: "Image must be jpg, jpeg, or png",
-          })
-        );
+    if (!validImageFormats.includes(image.mimetype)) {
+      return res.status(400).send(
+        createApiResponse(false, null, {
+          image: "Image must be jpg, jpeg, or png",
+        })
+      );
     }
 
     // upload image
-    const imageUri = await StorageService.uploadImage(req.file, "campaigns");
+    const imageUri = await StorageService.uploadFile(image, "campaigns");
+
+    // upload permit document
+    const permitDocumentUri = await StorageService.uploadFile(permitDocument, 'campaigns/permit-document')
 
     const deadline = addDaysToCurrentDate(req.body.duration);
 
@@ -334,6 +345,7 @@ const createCampaignHandler = async (req, res) => {
       deadline,
       image: imageUri,
       userId,
+      permitDocument: permitDocumentUri
     });
 
     return res.status(201).send(createApiResponse(true, campaign, null));
@@ -368,7 +380,10 @@ const getMyCampaignHandler = async (req, res) => {
     const user = res.locals.user;
     const { id: userId } = user;
 
-    const campaigns = await CampaignService.getCampaigns({ ...req.query, userId });
+    const campaigns = await CampaignService.getCampaigns({
+      ...req.query,
+      userId,
+    });
 
     const updatedCampaigns = updateDataCampaign(campaigns);
 
@@ -382,8 +397,6 @@ const getSearchCampaignsHandler = async (req, res) => {
   try {
     const { title } = req.query;
 
-    console.log(title)
-
     const campaigns = await CampaignService.getSearchCampaignByTitle(title);
 
     const updatedCampaigns = updateDataCampaign(campaigns);
@@ -392,7 +405,7 @@ const getSearchCampaignsHandler = async (req, res) => {
   } catch (error) {
     return res.status(500).send(createApiResponse(false, null, error.message));
   }
-}
+};
 
 const CampaignController = {
   getCampaignsHandler,
@@ -403,7 +416,7 @@ const CampaignController = {
   createCampaignHandler,
   checkSlug,
   getMyCampaignHandler,
-  getSearchCampaignsHandler
+  getSearchCampaignsHandler,
 };
 
 module.exports = CampaignController;
