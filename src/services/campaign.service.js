@@ -1,10 +1,11 @@
 const getTimeAgo = require("../utils/getTimeAgo");
 const { Report, Campaign, Donation, User, Soil, Sequelize } = require("../models");
-const { set } = require('lodash')
+const { set, omit } = require('lodash')
 
 const getCampaigns = async (query) => {
   return Campaign.findAll({
     limit: query.limit ? parseInt(query.limit) : null,
+    where: omit(query, ['limit']),
     attributes: [
       "id",
       "title",
