@@ -25,6 +25,7 @@ module.exports = function(app) {
   app.delete('/api/sessions', requireUser, SessionController.deleteSessionHandler)
 
   app.get('/api/campaigns', CampaignController.getCampaignsHandler);
+  app.get('/api/campaigns/search', CampaignController.getSearchCampaignsHandler)
   app.post('/api/campaigns', multerConfig.single('image'), validateRequest(CampaignSchema.createCampaignSchema), requireUser, CampaignController.createCampaignHandler);
   app.get('/api/campaigns/:slug', CampaignController.getCampaignBySlugHandler);
   app.get('/api/campaigns/:slug/donations', CampaignController.getDonationsHandler);

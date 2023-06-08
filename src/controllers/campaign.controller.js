@@ -368,8 +368,6 @@ const getMyCampaignHandler = async (req, res) => {
     const user = res.locals.user;
     const { id: userId } = user;
 
-    console.log("user id", userId)
-
     const campaigns = await CampaignService.getCampaigns({ ...req.query, userId });
 
     const updatedCampaigns = updateDataCampaign(campaigns);
@@ -380,6 +378,22 @@ const getMyCampaignHandler = async (req, res) => {
   }
 };
 
+const getSearchCampaignsHandler = async (req, res) => {
+  try {
+    const { title } = req.query;
+
+    console.log(title)
+
+    const campaigns = await CampaignService.getSearchCampaignByTitle(title);
+
+    const updatedCampaigns = updateDataCampaign(campaigns);
+
+    return res.send(createApiResponse(true, updatedCampaigns, null));
+  } catch (error) {
+    return res.status(500).send(createApiResponse(false, null, error.message));
+  }
+}
+
 const CampaignController = {
   getCampaignsHandler,
   getCampaignBySlugHandler,
@@ -389,6 +403,7 @@ const CampaignController = {
   createCampaignHandler,
   checkSlug,
   getMyCampaignHandler,
+  getSearchCampaignsHandler
 };
 
 module.exports = CampaignController;
