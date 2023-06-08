@@ -253,13 +253,30 @@ const createCampaignHandler = async (req, res) => {
   }
 }
 
+const checkSlug = async (req, res) => {
+  try {
+    const { slug } = req.params
+
+    const isExist = await CampaignService.isExistCampaign(slug)
+
+    if (isExist) {
+      return res.status(409).send(createApiResponse(true, { exist: true }, null))
+    }
+
+    return res.status(200).send(createApiResponse(true, { exist: false }, null))
+  } catch (error) {
+    return res.status(500).send(createApiResponse(false, null, error.message))
+  }
+}
+
 const CampaignController = {
   getCampaignsHandler,
   getCampaignBySlugHandler,
   getDonationsHandler,
   getReportsHandler,
   createDonationHandler,
-  createCampaignHandler
+  createCampaignHandler,
+  checkSlug
 }
 
 module.exports = CampaignController;

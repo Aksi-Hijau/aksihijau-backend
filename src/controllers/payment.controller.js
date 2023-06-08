@@ -48,8 +48,6 @@ const midtransCallback = async (req, res) => {
     "pending": "pending"
   }
 
-  console.log(req.body)
-
   try {
     if(!(generateHash(order_id, status_code, gross_amount) === signature_key)) {
       return res.status(400).send(createApiResponse(false, null, "Invalid signature"))
