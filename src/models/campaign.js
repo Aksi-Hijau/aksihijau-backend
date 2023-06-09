@@ -28,9 +28,17 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
+    permitDocument: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
     target: {
       type: DataTypes.INTEGER,
       allowNull: false,
+    },
+    location: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     description: {
       type: DataTypes.TEXT,

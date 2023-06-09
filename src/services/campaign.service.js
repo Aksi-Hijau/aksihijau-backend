@@ -1,11 +1,18 @@
 const getTimeAgo = require("../utils/getTimeAgo");
-const { Report, Campaign, Donation, User, Soil, Sequelize } = require("../models");
-const { set, omit } = require('lodash')
+const {
+  Report,
+  Campaign,
+  Donation,
+  User,
+  Soil,
+  Sequelize,
+} = require("../models");
+const { set, omit } = require("lodash");
 
 const getCampaigns = async (query) => {
   return Campaign.findAll({
     limit: query.limit ? parseInt(query.limit) : null,
-    where: omit(query, ['limit']),
+    where: omit(query, ["limit"]),
     attributes: [
       "id",
       "title",
@@ -43,10 +50,7 @@ const getCampaignBySlug = async (slug) => {
         "description",
         "updatedAt",
         "createdAt",
-        [
-          Sequelize.fn('COUNT', Sequelize.col('reports.id')),
-          'reportsCount'
-        ],
+        [Sequelize.fn("COUNT", Sequelize.col("reports.id")), "reportsCount"],
       ],
       include: [
         {
@@ -54,36 +58,36 @@ const getCampaignBySlug = async (slug) => {
           attributes: ["amount"],
           where: { status: "paid" },
           required: false,
-          as: 'donations'
+          as: "donations",
         },
         {
           model: User,
           attributes: ["photo", "name"],
-          as: "fundraiser"
+          as: "fundraiser",
         },
         {
           model: Soil,
           attributes: ["id", "type", "image"],
-          as: "soil"
+          as: "soil",
         },
         {
           model: Report,
           attributes: [],
-          as: "reports"
+          as: "reports",
         },
       ],
-      group: ['Campaign.id', 'donations.id', 'fundraiser.id', 'soil.id']
+      group: ["Campaign.id", "donations.id", "fundraiser.id", "soil.id"],
     });
 
     if (!campaign) {
-      return false
+      return false;
     }
-    
+
     const reportsCount = campaign.dataValues.reportsCount;
     const donationsCount = campaign.dataValues.donations.length;
 
-    set(campaign, 'dataValues.reportsCount', reportsCount)
-    set(campaign, 'dataValues.donationsCount', donationsCount)
+    set(campaign, "dataValues.reportsCount", reportsCount);
+    set(campaign, "dataValues.donationsCount", donationsCount);
 
     return campaign;
   } catch (error) {
@@ -92,7 +96,7 @@ const getCampaignBySlug = async (slug) => {
 };
 
 const getLatestDonations = async (campaignId, limit) => {
-  const donations =  await Donation.findAll({
+  const donations = await Donation.findAll({
     where: { campaignId, status: "paid" },
     limit: limit ? parseInt(limit) : null,
     order: [["paidAt", "DESC"]],
@@ -104,20 +108,20 @@ const getLatestDonations = async (campaignId, limit) => {
         as: "user",
       },
     ],
-  })
+  });
 
-  const formattedDonations = donations.map(donation => {
-    const { id, amount, paidAt, user } = donation.get({ plain: true })
-    const { name, photo: image } = user
+  const formattedDonations = donations.map((donation) => {
+    const { id, amount, paidAt, user } = donation.get({ plain: true });
+    const { name, photo: image } = user;
 
-    const paidAtDate = new Date(paidAt)
-    const formattedPaidAt = getTimeAgo(paidAtDate)
+    const paidAtDate = new Date(paidAt);
+    const formattedPaidAt = getTimeAgo(paidAtDate);
 
-    return { id, amount, paidAt: formattedPaidAt, name, image }
-  })
+    return { id, amount, paidAt: formattedPaidAt, name, image };
+  });
 
-  return formattedDonations
-}
+  return formattedDonations;
+};
 
 const getReports = async (campaignId) => {
   return Report.findAll({
@@ -130,13 +134,13 @@ const getReports = async (campaignId) => {
         as: "user",
       },
     ],
-  })
-}
+  });
+};
 
 const createCampaign = async (campaignData) => {
   const campaign = await Campaign.create(campaignData);
   return campaign;
-}
+};
 
 const isExistCampaign = async (slug) => {
   const campaign = await Campaign.findOne({
@@ -149,7 +153,38 @@ const isExistCampaign = async (slug) => {
   }
 
   return true;
-}
+};
+
+const getSearchCampaignByTitle = async (title) => {
+  const campaigns = await Campaign.findAll({
+    where: {
+      title: {
+        [Sequelize.Op.like]: `%${title}%`
+      },
+    },
+    attributes: [
+      "id",
+      "title",
+      "slug",
+      "image",
+      "target",
+      "deadline",
+      "updatedAt",
+      "createdAt",
+    ],
+    include: [
+      {
+        model: Donation,
+        attributes: ["amount"],
+        where: { status: "paid" },
+        required: false,
+        as: "donations",
+      },
+    ],
+  });
+
+  return campaigns;
+};
 
 const CampaignService = {
   getCampaigns,
@@ -157,7 +192,8 @@ const CampaignService = {
   getLatestDonations,
   getReports,
   createCampaign,
-  isExistCampaign
+  isExistCampaign,
+  getSearchCampaignByTitle,
 };
 
 module.exports = CampaignService;
