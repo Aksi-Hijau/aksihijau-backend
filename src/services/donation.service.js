@@ -63,7 +63,6 @@ const getDonationsUserHistory = async(userId) => {
 const getDonationWithCampaignAndPaymentByInvoice = async(invoice, userId) => {
   const donation = await Donation.findOne({
     where: { invoice, userId },
-    attributes: ['id', 'invoice', 'amount', 'status', 'paidAt', 'createdAt'],
     include: [
       {
         model: Campaign,
