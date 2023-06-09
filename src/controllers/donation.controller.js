@@ -1,6 +1,7 @@
 const DonationService = require("../services/donation.service");
 const PaymentInstructionService = require("../services/paymentInstruction.service");
 const createApiResponse = require("../utils/createApiResponse");
+const formattedDate = require("../utils/formattedDate");
 
 const getDonationsHandler = async (req, res) => {
   try {
@@ -18,23 +19,24 @@ const getDonationByInvoiceHandler = async (req, res) => {
   try {
     const user = res.locals.user
 
-    const donations = await DonationService.getDonationWithCampaignAndPaymentByInvoice(req.params.invoice, user.id)
+    const donation = await DonationService.getDonationWithCampaignAndPaymentByInvoice(req.params.invoice, user.id)
 
-    if (!donations) {
+    if (!donation) {
       return res.status(404).send(createApiResponse(false, null, { invoice: 'Donation not found' }))
     }
 
     const updatedDonations = {
-      invoice: donations.invoice,
-      campaignImage: donations.campaign.image,
-      campaignTitle: donations.campaign.title,
-      amount: donations.amount,
-      payment: donations.payment,
-      status: donations.status,
-      paidAt: donations.paidAt,
-      createdAt: donations.createdAt,
+      invoice: donation.invoice,
+      campaignImage: donation.campaign.image,
+      campaignTitle: donation.campaign.title,
+      amount: donation.amount,
+      payment: donation.payment,
+      status: donation.status,
+      paidAt: donation.paidAt,
+      createdAt: donation.createdAt,
+      deadline: formattedDate(donation.deadline),
       _links: {
-        instructions: `/api/donations/${donations.invoice}/instructions`
+        instructions: `/api/donations/${donation.invoice}/instructions`
       }
     }
 
