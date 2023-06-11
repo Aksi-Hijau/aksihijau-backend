@@ -22,7 +22,7 @@ const getSoilsHandler = async (req, res) => {
     const { name: type } = req.query
 
     if (type) {
-      const soil = await SoilService.findSoilByQuery({ type })
+      const soil = await SoilService.findSoilByQuery({ type: type.toLowerCase() })
 
       if (!soil) {
         return res.status(404).send(createApiResponse(false, null, { name: "Soil not found" }))
