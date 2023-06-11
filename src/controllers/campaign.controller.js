@@ -6,6 +6,7 @@ const DonationService = require("../services/donation.service");
 const PaymentService = require("../services/payment.service");
 const formattedDate = require("../utils/formattedDate");
 const addDaysToCurrentDate = require("../utils/addDaysToCurrentDate");
+const processDescription = require("../utils/processDescription");
 const Campaign = require("../models").Campaign;
 
 const campaignHateOasGenerator = (campaign) => {
@@ -304,13 +305,19 @@ const createCampaignHandler = async (req, res) => {
     const user = res.locals.user;
     const { id: userId } = user;
     
-    const image = req.files["image"][0];
-    const permitDocument = req.files["permitDocument"][0];
+    const image = req.files["image"] ? req.files["image"][0] : null;
+    const permitDocument = req.files["permitDocument"] ? req.files["permitDocument"][0] : null;
 
     if (!image) {
       return res
         .status(400)
         .send(createApiResponse(false, null, { image: "Image is required" }));
+    }
+
+    if (!permitDocument) {
+      return res
+        .status(400)
+        .send(createApiResponse(false, null, { permitDocument: "Permit document is required" }));
     }
 
     const validDocumentFormats = ["application/pdf", "image/jpg", "image/jpeg", "image/png"];
@@ -342,6 +349,7 @@ const createCampaignHandler = async (req, res) => {
     // create campaign
     const campaign = await CampaignService.createCampaign({
       ...req.body,
+      description: await processDescription(req.body.description),
       deadline,
       image: imageUri,
       userId,

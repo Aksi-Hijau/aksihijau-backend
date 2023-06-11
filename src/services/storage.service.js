@@ -12,7 +12,7 @@ const storage = new Storage({
 const bucketName = process.env.STORAGE_BUCKET_NAME
 const bucket = storage.bucket(bucketName)
 
-const uploadFile = async (file, folder = '') => {
+const uploadFile = (file, folder = '') => {
   const fileExtension = path.extname(file.originalname);
   const uniqueFilename = `${uuidv4()}${fileExtension}`
   const blob = bucket.file(`${folder ? folder : ''}/${uniqueFilename}`)
