@@ -1,6 +1,7 @@
 const express =  require('express')
 const dotenv = require('dotenv');
 dotenv.config();
+const cors = require('cors')
 const routes = require('./routes')
 const db = require('./models')
 const deserializeUser = require('./middleware/deserializeUser')
@@ -10,6 +11,7 @@ const HOST = 'localhost'
 const app = express()
 
 app.use(express.json())
+app.use(cors())
 app.use(express.urlencoded({ extended: true }))
 app.use(deserializeUser)
 

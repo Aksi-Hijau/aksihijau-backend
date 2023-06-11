@@ -33,6 +33,7 @@ module.exports = function(app) {
   app.get('/api/campaigns/check-slug/:slug', CampaignController.checkSlug)
   app.get('/api/my-campaigns', requireUser, CampaignController.getMyCampaignHandler)
 
+  app.get('/api/soils', SoilController.getSoilsHandler);
   app.get('/api/soils/:id', SoilController.getSoilByIdHandler);
 
   app.post('/api/campaigns/:slug/donations', validateRequest(DonationSchema.createDonationSchema), requireUser, CampaignController.createDonationHandler);
