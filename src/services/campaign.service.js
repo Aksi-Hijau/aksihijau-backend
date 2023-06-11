@@ -186,6 +186,11 @@ const getSearchCampaignByTitle = async (title) => {
   return campaigns;
 };
 
+const createReport = async (reportData) => {
+  const report = await Report.create(reportData);
+  return report;
+};
+
 const CampaignService = {
   getCampaigns,
   getCampaignBySlug,
@@ -194,6 +199,7 @@ const CampaignService = {
   createCampaign,
   isExistCampaign,
   getSearchCampaignByTitle,
+  createReport
 };
 
 module.exports = CampaignService;
