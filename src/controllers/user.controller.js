@@ -20,8 +20,19 @@ const createUserHandler = async (req, res) => {
   }
 }
 
+const getUserHandler = async (req, res) => {
+  try {
+    const user = res.locals.user;
+
+    return res.status(200).send(createApiResponse(true, user, null));
+  } catch (error) {
+    return res.status(500).send(createApiResponse(false, null, error.message));
+  }
+}
+
 const UserController = {
   createUserHandler,
+  getUserHandler
 };
 
 module.exports = UserController;

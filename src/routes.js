@@ -20,6 +20,7 @@ module.exports = function(app) {
   })
 
   app.post('/api/users', validateRequest(UserSchema.createUserSchema), UserController.createUserHandler);
+  app.get('/api/user', requireUser, UserController.getUserHandler);
 
   app.post('/api/sessions', validateRequest(SessionSchema.createSessionSchema), SessionController.createSessionHandler)
 
