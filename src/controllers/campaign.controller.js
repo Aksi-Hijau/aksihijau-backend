@@ -304,9 +304,11 @@ const createCampaignHandler = async (req, res) => {
   try {
     const user = res.locals.user;
     const { id: userId } = user;
-    
+
     const image = req.files["image"] ? req.files["image"][0] : null;
-    const permitDocument = req.files["permitDocument"] ? req.files["permitDocument"][0] : null;
+    const permitDocument = req.files["permitDocument"]
+      ? req.files["permitDocument"][0]
+      : null;
 
     if (!image) {
       return res
@@ -317,10 +319,19 @@ const createCampaignHandler = async (req, res) => {
     if (!permitDocument) {
       return res
         .status(400)
-        .send(createApiResponse(false, null, { permitDocument: "Permit document is required" }));
+        .send(
+          createApiResponse(false, null, {
+            permitDocument: "Permit document is required",
+          })
+        );
     }
 
-    const validDocumentFormats = ["application/pdf", "image/jpg", "image/jpeg", "image/png"];
+    const validDocumentFormats = [
+      "application/pdf",
+      "image/jpg",
+      "image/jpeg",
+      "image/png",
+    ];
     if (!validDocumentFormats.includes(permitDocument.mimetype)) {
       return res.status(400).send(
         createApiResponse(false, null, {
@@ -342,7 +353,10 @@ const createCampaignHandler = async (req, res) => {
     const imageUri = await StorageService.uploadFile(image, "campaigns");
 
     // upload permit document
-    const permitDocumentUri = await StorageService.uploadFile(permitDocument, 'campaigns/permit-document')
+    const permitDocumentUri = await StorageService.uploadFile(
+      permitDocument,
+      "campaigns/permit-document"
+    );
 
     const deadline = addDaysToCurrentDate(req.body.duration);
 
@@ -353,7 +367,7 @@ const createCampaignHandler = async (req, res) => {
       deadline,
       image: imageUri,
       userId,
-      permitDocument: permitDocumentUri
+      permitDocument: permitDocumentUri,
     });
 
     return res.status(201).send(createApiResponse(true, campaign, null));
@@ -415,6 +429,43 @@ const getSearchCampaignsHandler = async (req, res) => {
   }
 };
 
+const createReportHandler = async (req, res) => {
+  try {
+    const slug = req.params.slug;
+    const user = res.locals.user;
+    const { id: userId } = user;
+
+    const campaign = await Campaign.findOne({ where: { slug } });
+
+    if (!campaign) {
+      return res
+        .status(404)
+        .send(createApiResponse(false, null, { slug: "Campaign not found" }));
+    }
+
+    if (campaign.userId !== userId) {
+      return res
+        .status(403)
+        .send(
+          createApiResponse(false, null, {
+            user: "You are not allowed to create report for this campaign",
+          })
+        );
+    }
+
+    const report = await CampaignService.createReport({
+      ...req.body,
+      body: await processDescription(req.body.body),
+      campaignId: campaign.id,
+      userId,
+    });
+
+    return res.status(201).send(createApiResponse(true, report, null));
+  } catch (error) {
+    return res.status(500).send(createApiResponse(false, null, error.message));
+  }
+};
+
 const CampaignController = {
   getCampaignsHandler,
   getCampaignBySlugHandler,
@@ -425,6 +476,7 @@ const CampaignController = {
   checkSlug,
   getMyCampaignHandler,
   getSearchCampaignsHandler,
+  createReportHandler,
 };
 
 module.exports = CampaignController;

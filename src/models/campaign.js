@@ -62,7 +62,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Campaign.associate = (models) => {
     Campaign.belongsTo(models.User, { as: 'fundraiser', foreignKey: 'id' });
-    Campaign.belongsTo(models.Soil, { as: 'soil', foreignKey: 'id' });
+    Campaign.belongsTo(models.Soil, { as: 'soil', foreignKey: 'soilId' });
     Campaign.hasMany(models.Donation, { as: 'donations', foreignKey: 'campaignId' });
     Campaign.hasMany(models.Report, { as: 'reports', foreignKey: 'campaignId' });
   }

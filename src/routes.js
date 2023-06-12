@@ -8,6 +8,7 @@ const requireUser = require('./middleware/requireUser.js');
 const validateRequest = require('./middleware/validateRequest.js');
 const CampaignSchema = require('./schemas/campaign.schema.js');
 const DonationSchema = require('./schemas/donation.schema.js');
+const ReportSchema = require('./schemas/report.schema.js');
 const User = require('./models').User;
 const SessionSchema = require('./schemas/session.schema.js');
 const UserSchema = require('./schemas/user.schema.js');
@@ -30,6 +31,7 @@ module.exports = function(app) {
   app.get('/api/campaigns/:slug', CampaignController.getCampaignBySlugHandler);
   app.get('/api/campaigns/:slug/donations', CampaignController.getDonationsHandler);
   app.get('/api/campaigns/:slug/reports', CampaignController.getReportsHandler);
+  app.post('/api/campaigns/:slug/reports', validateRequest(ReportSchema.createReportSchema), requireUser, CampaignController.createReportHandler);
   app.get('/api/campaigns/check-slug/:slug', CampaignController.checkSlug)
   app.get('/api/my-campaigns', requireUser, CampaignController.getMyCampaignHandler)
 
