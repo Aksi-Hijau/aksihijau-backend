@@ -20,7 +20,9 @@ module.exports = function(app) {
   })
 
   app.post('/api/users', validateRequest(UserSchema.createUserSchema), UserController.createUserHandler);
+  
   app.get('/api/user', requireUser, UserController.getUserHandler);
+  app.put('/api/user', requireUser, multerConfig.single('photo'), UserController.updateUserHandler)
 
   app.post('/api/sessions', validateRequest(SessionSchema.createSessionSchema), SessionController.createSessionHandler)
 

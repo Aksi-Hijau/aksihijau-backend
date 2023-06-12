@@ -1,3 +1,5 @@
+const StorageService = require('../services/storage.service.js');
+const UserService = require('../services/user.service.js');
 const createApiResponse = require('../utils/createApiResponse.js');
 
 const User = require('../models').User;
@@ -30,9 +32,35 @@ const getUserHandler = async (req, res) => {
   }
 }
 
+const updateUserHandler = async (req, res) => {
+  try {
+    const user = res.locals.user;
+    const { name, birthDate } = req.body;
+
+    let photo = user.photo;
+
+    if (req.file) {
+      const validImageFormats = ["image/jpg", "image/jpeg", "image/png"];
+
+      if (!validImageFormats.includes(req.file.mimetype)) {
+        return res.status(400).send(createApiResponse(false, null, { photo: "Invalid image format!" }));
+      }
+
+      photo = StorageService.uploadFile(req.file, "user");
+    }
+
+    const updatedUser = await UserService.updateById(user.id, { name, birthDate, photo })
+
+    return res.status(200).send(createApiResponse(true, updatedUser, null));
+  } catch (error) {
+    return res.status(500).send(createApiResponse(false, null, error.message));
+  }
+}
+
 const UserController = {
   createUserHandler,
-  getUserHandler
+  getUserHandler,
+  updateUserHandler
 };
 
 module.exports = UserController;
