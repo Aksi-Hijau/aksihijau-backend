@@ -64,7 +64,7 @@ const getCampaignBySlug = async (slug) => {
         },
         {
           model: User,
-          attributes: ["photo", "name"],
+          attributes: ["id", "photo", "name"],
           as: "fundraiser",
         },
         {

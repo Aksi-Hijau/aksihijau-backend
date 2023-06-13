@@ -135,11 +135,15 @@ const getCampaignBySlugHandler = async (req, res) => {
       },
     };
 
+    const user = res.locals.user
+
     const removeDonationsList = omit(plainCampaign, ["donations"]);
+
     const responseData = {
       ...removeDonationsList,
       remainingDays,
       collected,
+      isMine: user ? user.id === removeDonationsList.fundraiser.id : false,
       active,
       latestDonations,
       _links: hateOas,
