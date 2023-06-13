@@ -1,6 +1,7 @@
 const StorageService = require('../services/storage.service.js');
 const UserService = require('../services/user.service.js');
 const createApiResponse = require('../utils/createApiResponse.js');
+const formattedDateToDateOnly = require('../utils/formattedDateToDateOnly.js');
 
 const User = require('../models').User;
 
@@ -68,7 +69,7 @@ const getAllUsersHandler = async (req, res) => {
         email: user.email,
         photo: user.photo,
         role: user.role,
-        birthDate: user.birthDate ? user.birthDate.toISOString().split('T')[0] : null,
+        birthDate: formattedDateToDateOnly(user.birthDate),
       }
     })
 

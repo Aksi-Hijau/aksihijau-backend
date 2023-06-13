@@ -56,4 +56,6 @@ module.exports = function(app) {
   app.get('/api/summary', SummaryController.getSummaryHandler)
 
   app.get('/api/allUsers', UserController.getAllUsersHandler)
+
+  app.get('/api/allCampaigns', CampaignController.getAllCampaignsHandler)
 }

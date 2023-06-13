@@ -22,6 +22,7 @@ const getCampaigns = async (query) => {
       "deadline",
       "updatedAt",
       "createdAt",
+      'status'
     ],
     include: [
       {
@@ -32,6 +33,7 @@ const getCampaigns = async (query) => {
         as: "donations",
       },
     ],
+    order: [['createdAt', 'DESC']],
   });
 };
 
@@ -199,7 +201,7 @@ const CampaignService = {
   createCampaign,
   isExistCampaign,
   getSearchCampaignByTitle,
-  createReport
+  createReport,
 };
 
 module.exports = CampaignService;

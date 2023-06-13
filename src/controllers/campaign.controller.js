@@ -7,6 +7,8 @@ const PaymentService = require("../services/payment.service");
 const formattedDate = require("../utils/formattedDate");
 const addDaysToCurrentDate = require("../utils/addDaysToCurrentDate");
 const processDescription = require("../utils/processDescription");
+const formattedDateToDateOnly = require("../utils/formattedDateToDateOnly");
+const isCampaignStillValid = require("../services/isCampaignStillValid");
 const Campaign = require("../models").Campaign;
 
 const campaignHateOasGenerator = (campaign) => {
@@ -46,13 +48,6 @@ const updateDataCampaign = (campaigns) => {
       0
     );
 
-    // Menghitung apakah campaign masih aktif
-    const active = plainCampaign.deadline
-      ? remainingDays > 0
-        ? true
-        : false
-      : true;
-
     // Generate hateoas
     const hateOas = campaignHateOasGenerator(plainCampaign);
 
@@ -63,8 +58,11 @@ const updateDataCampaign = (campaigns) => {
     const updatedCampaign = {
       ...plainCampaign,
       collected,
-      remainingDays,
-      active,
+      remainingDays: isCampaignStillValid(plainCampaign.deadline) ? remainingDays : 0,
+      active: isCampaignStillValid(plainCampaign.deadline),
+      status: isCampaignStillValid(plainCampaign.deadline) ? plainCampaign.status : "inactive",
+      deadline: formattedDateToDateOnly(plainCampaign.deadline),
+      createdAtDateOnly: formattedDateToDateOnly(plainCampaign.createdAt),
       _links: hateOas,
     };
 
@@ -466,6 +464,18 @@ const createReportHandler = async (req, res) => {
   }
 };
 
+const getAllCampaignsHandler = async (req, res) => {
+  try {
+    const campaigns = await CampaignService.getCampaigns({});
+
+    const updatedCampaigns = updateDataCampaign(campaigns);
+
+    return res.send(createApiResponse(true, updatedCampaigns, null));
+  } catch (error) {
+    return res.status(500).send(createApiResponse(false, null, error.message));
+  }
+};
+
 const CampaignController = {
   getCampaignsHandler,
   getCampaignBySlugHandler,
@@ -477,6 +487,7 @@ const CampaignController = {
   getMyCampaignHandler,
   getSearchCampaignsHandler,
   createReportHandler,
+  getAllCampaignsHandler
 };
 
 module.exports = CampaignController;
