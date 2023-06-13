@@ -193,6 +193,22 @@ const createReport = async (reportData) => {
   return report;
 };
 
+const updateStatus = async (slug, status) => {
+  const campaign = await Campaign.findOne({
+    where: { slug },
+  });
+
+  if (!campaign) {
+    return false;
+  }
+  console.log(campaign)
+
+  campaign.status = status;
+  await campaign.save();
+
+  return campaign;
+};
+
 const CampaignService = {
   getCampaigns,
   getCampaignBySlug,
@@ -202,6 +218,7 @@ const CampaignService = {
   isExistCampaign,
   getSearchCampaignByTitle,
   createReport,
+  updateStatus
 };
 
 module.exports = CampaignService;

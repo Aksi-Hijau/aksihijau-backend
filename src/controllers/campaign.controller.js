@@ -476,6 +476,25 @@ const getAllCampaignsHandler = async (req, res) => {
   }
 };
 
+const updateCampaignStatusHandler = async (req, res) => {
+  try {
+    const { slug } = req.params;
+    const { status } = req.body;
+    
+    const campaign = await CampaignService.updateStatus(slug, status);
+
+    if (!campaign) {
+      return res
+        .status(404)
+        .send(createApiResponse(false, null, { slug: "Campaign not found" }));
+    }
+
+    return res.status(201).send(createApiResponse(true, campaign, null));
+  } catch (error) {
+    return res.status(500).send(createApiResponse(false, null, error.message));
+  }
+}
+
 const CampaignController = {
   getCampaignsHandler,
   getCampaignBySlugHandler,
@@ -487,7 +506,8 @@ const CampaignController = {
   getMyCampaignHandler,
   getSearchCampaignsHandler,
   createReportHandler,
-  getAllCampaignsHandler
+  getAllCampaignsHandler,
+  updateCampaignStatusHandler
 };
 
 module.exports = CampaignController;

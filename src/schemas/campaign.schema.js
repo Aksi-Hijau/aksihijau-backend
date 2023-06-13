@@ -20,8 +20,18 @@ const createCampaignSchema = object({
   }),
 })
 
+const updateCampaignStatusSchema = object({
+  params: object({
+    slug: string().required('Slug is required'),
+  }),
+  body: object({
+    status: string().oneOf(['active', 'inactive', 'pending']).required('Status is required')
+  })
+})
+
 const CampaignSchema = {
-  createCampaignSchema
+  createCampaignSchema,
+  updateCampaignStatusSchema
 }
 
 module.exports = CampaignSchema
