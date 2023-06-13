@@ -10,9 +10,14 @@ const updateById = async (id, data) => {
   return updatedUser;
 }
 
+const getAllUsers = async () => {
+  return User.findAll();
+}
+
 const UserService = {
   findUser,
-  updateById
+  updateById,
+  getAllUsers
 }
 
 module.exports = UserService;

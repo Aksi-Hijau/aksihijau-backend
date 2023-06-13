@@ -57,10 +57,32 @@ const updateUserHandler = async (req, res) => {
   }
 }
 
+const getAllUsersHandler = async (req, res) => {
+  try {
+    const users = await UserService.getAllUsers();
+
+    const updatedUsers = users.map(user => {
+      return {
+        id: user.uuid,
+        name: user.name,
+        email: user.email,
+        photo: user.photo,
+        role: user.role,
+        birthDate: user.birthDate ? user.birthDate.toISOString().split('T')[0] : null,
+      }
+    })
+
+    return res.status(200).send(createApiResponse(true, updatedUsers, null));
+  } catch (error) {
+    return res.status(500).send(createApiResponse(false, null, error.message))
+  }
+}
+
 const UserController = {
   createUserHandler,
   getUserHandler,
-  updateUserHandler
+  updateUserHandler,
+  getAllUsersHandler
 };
 
 module.exports = UserController;

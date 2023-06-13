@@ -54,4 +54,6 @@ module.exports = function(app) {
 
   // for web dashboard
   app.get('/api/summary', SummaryController.getSummaryHandler)
+
+  app.get('/api/allUsers', UserController.getAllUsersHandler)
 }
