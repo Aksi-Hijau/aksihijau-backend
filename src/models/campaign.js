@@ -47,7 +47,13 @@ module.exports = (sequelize, DataTypes) => {
     deadline: {
       type: DataTypes.DATE,
       allowNull: false,
-    }, createdAt: {
+    },
+    status: {
+      type: DataTypes.ENUM('pending', 'active', 'inactive'),
+      allowNull: false,
+      defaultValue: "pending",
+    },
+    createdAt: {
       allowNull: false,
       type: 'TIMESTAMP',
     },

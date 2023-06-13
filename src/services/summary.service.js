@@ -7,15 +7,23 @@ const getSummary = async () => {
     },
   });
   const activeUsers = await User.count({});
-  const activeCampaigns = await Campaign.count({});
-  const pendingCampaigns = 0;
+  const activeCampaigns = await Campaign.count({
+    where: {
+      status: "active",
+    },
+  });
+  const pendingCampaigns = await Campaign.count({
+    where: {
+      status: "pending",
+    },
+  });
   return {
     successTransactions,
     activeUsers,
     activeCampaigns,
     pendingCampaigns,
   };
-}
+};
 
 const SummaryService = {
   getSummary,
