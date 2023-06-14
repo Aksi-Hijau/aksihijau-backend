@@ -20,6 +20,7 @@ const getCampaigns = async (query) => {
       "image",
       "target",
       "deadline",
+      "permitDocument",
       "updatedAt",
       "createdAt",
       'status'

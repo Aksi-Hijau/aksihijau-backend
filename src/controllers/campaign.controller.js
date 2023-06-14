@@ -62,6 +62,7 @@ const updateDataCampaign = (campaigns) => {
       active: isCampaignStillValid(plainCampaign.deadline),
       // status: isCampaignStillValid(plainCampaign.deadline) ? plainCampaign.status : "inactive",
       status: plainCampaign.status,
+      permitDocument: plainCampaign.permitDocument,
       deadline: formattedDateToDateOnly(plainCampaign.deadline),
       createdAtDateOnly: formattedDateToDateOnly(plainCampaign.createdAt),
       _links: hateOas,
