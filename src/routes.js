@@ -60,4 +60,6 @@ module.exports = function(app) {
   app.get('/api/allCampaigns', CampaignController.getAllCampaignsHandler)
 
   app.put('/api/campaigns/:slug', validateRequest(CampaignSchema.updateCampaignStatusSchema), CampaignController.updateCampaignStatusHandler)
+
+  app.get('/api/summary/donations', DonationController.getDonationsLastYear);
 }

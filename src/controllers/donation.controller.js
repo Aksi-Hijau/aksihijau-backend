@@ -76,10 +76,29 @@ const getDonationInstructionByInvoiceHandler = async (req, res) => {
   }
 }
 
+const getDonationsLastYear = async (req, res) => {
+  try {
+    const donations = await DonationService.getDonationsLastYear()
+
+    const labels = donations.map((donation) => donation.date);
+    const donationsCounts = donations.map((donation) => donation.total);
+
+    const responseData = {
+      labels,
+      donationsCounts,
+    };
+
+    return res.send(createApiResponse(true, responseData, null))
+  } catch (error) {
+    return res.status(500).send(createApiResponse(false, null, error.message))
+  }
+}
+
 const DonationController = {
   getDonationsHandler,
   getDonationByInvoiceHandler,
-  getDonationInstructionByInvoiceHandler
+  getDonationInstructionByInvoiceHandler,
+  getDonationsLastYear
 }
 
 module.exports = DonationController;
