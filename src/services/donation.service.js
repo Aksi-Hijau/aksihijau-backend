@@ -146,12 +146,12 @@ const getDonationsLastYear = async () => {
       [
         sequelize.fn(
           "DATE_FORMAT",
-          sequelize.col("donation.createdAt"),
+          sequelize.col("Donation.createdAt"),
           "%m/%d/%Y"
         ),
         "date",
       ],
-      [sequelize.fn("SUM", sequelize.col("donation.amount")), "total"],
+      [sequelize.fn("SUM", sequelize.col("Donation.amount")), "total"],
     ],
     where: {
       createdAt: {
