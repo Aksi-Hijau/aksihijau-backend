@@ -144,7 +144,7 @@ const getCampaignBySlugHandler = async (req, res) => {
       ...removeDonationsList,
       remainingDays,
       collected,
-      isMine: user ? user.id === removeDonationsList.fundraiser.id : false,
+      isMine: user ? user.id == removeDonationsList.fundraiser.id : false,
       active,
       latestDonations,
       _links: hateOas,
