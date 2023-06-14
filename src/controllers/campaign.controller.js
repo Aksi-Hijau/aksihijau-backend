@@ -197,7 +197,7 @@ const getReportsHandler = async (req, res) => {
         creatorImage: report.user.photo,
         title: report.title,
         body: report.body,
-        createdAt: report.createdAt,
+        createdAt: formattedDate(report.createdAt),
       };
     });
 
