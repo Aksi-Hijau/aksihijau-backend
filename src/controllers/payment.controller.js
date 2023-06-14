@@ -66,9 +66,28 @@ const midtransCallback = async (req, res) => {
   }
 }
 
+const getPaymentDistributionsHandler = async (req, res) => {
+  try {
+    const paymentDistributions = await PaymentService.getPaymentDistributions({})
+
+    const categories = paymentDistributions.map(paymentDistribution => paymentDistribution["payment.name"])
+    const count = paymentDistributions.map(paymentDistribution => paymentDistribution.count)
+
+    const responseData = {
+      categories,
+      count
+    }
+
+    return res.send(createApiResponse(true, responseData, null))
+  } catch(error) {
+    return res.status(500).send(createApiResponse(false, null, error.message))
+  }
+}
+
 const PaymentController = {
   getPaymentsHandler,
-  midtransCallback
+  midtransCallback,
+  getPaymentDistributionsHandler
 }
 
 module.exports = PaymentController

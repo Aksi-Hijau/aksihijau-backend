@@ -62,4 +62,6 @@ module.exports = function(app) {
   app.put('/api/campaigns/:slug', validateRequest(CampaignSchema.updateCampaignStatusSchema), CampaignController.updateCampaignStatusHandler)
 
   app.get('/api/summary/donations', DonationController.getDonationsLastYear);
+
+  app.get('/api/payments/distributions', PaymentController.getPaymentDistributionsHandler)
 }

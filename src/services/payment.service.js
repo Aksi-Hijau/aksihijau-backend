@@ -1,5 +1,5 @@
 const BankTransfer = require("../payments/BankTransfer")
-const { Payment, PaymentAction } = require("../models")
+const { Payment, PaymentAction, Donation, sequelize } = require("../models")
 const EWalletPayment = require("../payments/EWalletPayment")
 
 const createPaymentMidtrans = async (newDonation, user) => {
@@ -86,13 +86,33 @@ const getPayments = async (query) => {
   })
 }
 
+const getPaymentDistributions = async () => {
+  const donationsCountByPayment = await Donation.findAll({
+    attributes: [
+      [sequelize.fn('COUNT', sequelize.col('paymentId')), 'count'],
+    ],
+    include: [
+      {
+        model: Payment,
+        as: 'payment',
+        attributes: ['id', 'name']
+      }
+    ],
+    group: ['paymentId'],
+    raw: true
+  })
+
+  return donationsCountByPayment
+} 
+
 const PaymentService = {
   createPaymentMidtrans,
   createBankTransfer,
   getPaymentOptions,
   createEwalletPayment,
   createPaymentAction,
-  getPayments
+  getPayments,
+  getPaymentDistributions
 }
 
 module.exports = PaymentService
