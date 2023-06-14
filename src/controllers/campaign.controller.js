@@ -60,7 +60,8 @@ const updateDataCampaign = (campaigns) => {
       collected,
       remainingDays: isCampaignStillValid(plainCampaign.deadline) ? remainingDays : 0,
       active: isCampaignStillValid(plainCampaign.deadline),
-      status: isCampaignStillValid(plainCampaign.deadline) ? plainCampaign.status : "inactive",
+      // status: isCampaignStillValid(plainCampaign.deadline) ? plainCampaign.status : "inactive",
+      status: 'active',
       deadline: formattedDateToDateOnly(plainCampaign.deadline),
       createdAtDateOnly: formattedDateToDateOnly(plainCampaign.createdAt),
       _links: hateOas,
@@ -74,7 +75,7 @@ const updateDataCampaign = (campaigns) => {
 
 const getCampaignsHandler = async (req, res) => {
   try {
-    const campaigns = await CampaignService.getCampaigns(req.query);
+    const campaigns = await CampaignService.getCampaigns({ ...req.query, status: 'active' });
 
     const updatedCampaigns = updateDataCampaign(campaigns);
 
@@ -196,7 +197,7 @@ const getReportsHandler = async (req, res) => {
         creatorImage: report.user.photo,
         title: report.title,
         body: report.body,
-        createdAt: report.createdAt,
+        createdAt: formattedDate(report.createdAt),
       };
     });
 
