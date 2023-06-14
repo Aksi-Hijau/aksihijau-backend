@@ -18,7 +18,7 @@ const uploadFile = (file, folder = '') => {
   const blob = bucket.file(`${folder ? folder : ''}/${uniqueFilename}`)
   const blobStream = blob.createWriteStream()
 
-  const imageUri = `https://storage.cloud.google.com/${bucket.name}/${blob.name}`
+  const imageUri = `https://storage.googleapis.com/${bucket.name}/${blob.name}`
 
   blobStream.on('error', err => {
     console.log(err)
