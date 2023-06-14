@@ -1,0 +1,42 @@
+steps:
+  # Memeriksa repositori dari GitHub
+  - name: 'gcr.io/cloud-builders/git'
+    args: ['clone', 'https://github.com/juanangelaalma/aksihijau-backend.git', '.']
+
+  # Mengunduh file .env dari penyimpanan objek (contoh menggunakan Google Cloud Storage)
+  - name: 'gcr.io/cloud-builders/gsutil'
+    args: ['cp', 'gs://aksihijau-config-file/.env', '.env']
+
+  # Mengunduh file service-account.json dari penyimpanan objek (contoh menggunakan Google Cloud Storage)
+  - name: 'gcr.io/cloud-builders/gsutil'
+    args: ['cp', 'gs://aksihijau-config-file/service-account-key.json', 'service-account-key.json']
+  
+  # Mengunduh file config.json dari penyimpanan objek (contoh menggunakan Google Cloud Storage)
+  - name: 'gcr.io/cloud-builders/gsutil'
+    args: ['cp', 'gs://aksihijau-config-file/config.json', 'src/config/config.json']
+
+  # Build Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/aksihijau-backend', '.']
+
+  # Push Docker image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/aksihijau-backend']
+
+# Menerapkan aplikasi ke Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'aksihijau-backend'
+      - '--image=gcr.io/$PROJECT_ID/aksihijau-backend'
+      - '--platform=managed'
+      - '--region=asia-southeast2'
+      - '--service-account=aksihijau-cloud-storage-servic@rational-text-381300.iam.gserviceaccount.com'
+      - '--update-env-vars=KEY=VALUE'
+      - '--allow-unauthenticated'
+
+
+images:
+  - 'gcr.io/$PROJECT_ID/aksihijau-backend'
