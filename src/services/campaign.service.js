@@ -137,6 +137,7 @@ const getReports = async (campaignId) => {
         as: "user",
       },
     ],
+    order: [["createdAt", "DESC"]],
   });
 };
 
