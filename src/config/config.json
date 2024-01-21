@@ -1,23 +1,23 @@
 {
     "development": {
-      "username": "root",
+      "username": "aksihijau",
       "password": "aksi1234",
       "database": "aksi_db",
-      "host": "34.128.79.253",
+      "host": "mysql",
       "dialect": "mysql"
     },
     "test": {
-      "username": "root",
-      "password": null,
+      "username": "aksihijau",
+      "password": "aksi1234",
       "database": "database_test",
       "host": "127.0.0.1",
       "dialect": "mysql"
     },
     "production": {
-      "username": "root",
+      "username": "aksihijau",
       "password": "aksi1234",
       "database": "aksi_db",
-      "host": "34.128.79.253",
+      "host": "mysql",
       "dialect": "mysql"
     }
   }

@@ -6,7 +6,7 @@ const cors = require('cors')
 const routes = require('./routes')
 const db = require('./models')
 const deserializeUser = require('./middleware/deserializeUser')
-const PORT = process.env.PORT || 8080
+const PORT = process.env.PORT || 3000
 const HOST = 'localhost'
 
 const app = express()

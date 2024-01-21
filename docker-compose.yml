@@ -1,0 +1,36 @@
+version: '3.9'
+services:
+  mysql:
+    image: 'mysql/mysql-server:8.0'
+    environment:
+      MYSQL_ROOT_PASSWORD: 'aksi1234'
+      MYSQL_DATABASE: 'aksi_db'
+      MYSQL_USER: 'aksihijau'
+      MYSQL_PASSWORD: 'aksi1234'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    ports:
+      - '3306:3306'
+    volumes:
+      - 'aksihijau-backend-db:/var/lib/mysql'
+    networks:
+      - aksihijau-network
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      STORAGE_BUCKET_NAME: 'app_file_aksihijau'
+    networks:
+      - aksihijau-network
+    depends_on:
+      - mysql
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./src:/app/src
+networks:
+  aksihijau-network:
+    driver: bridge
+volumes:
+  aksihijau-backend-db:
+    driver: local

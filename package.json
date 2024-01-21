@@ -33,6 +33,7 @@
     "yup": "^1.1.1"
   },
   "devDependencies": {
-    "babel-register": "^6.26.0"
+    "babel-register": "^6.26.0",
+    "nodemon": "^3.0.3"
   }
 }

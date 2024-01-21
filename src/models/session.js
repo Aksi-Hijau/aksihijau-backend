@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Session.init({
-    userId: DataTypes.UUID,
+    userId: DataTypes.INTEGER,
     valid: DataTypes.BOOLEAN,
     userAgent: DataTypes.STRING
   }, {
@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   Session.associate = (models) => {
-    Session.belongsTo(models.User, { foreignKey: 'id' });
+    Session.belongsTo(models.User, { foreignKey: 'userId' });
   };
 
   return Session;
